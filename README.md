@@ -40,7 +40,7 @@ To use the Measure Counting Tool, follow these steps:
 Once the virtual environment is activated and the dependencies are installed, run the script:
 
 ```bash
-python measure_counting_tool.py
+python mxl_measure_counter.py
 ```
 
 The GUI application will open, allowing you to interact with the tool.

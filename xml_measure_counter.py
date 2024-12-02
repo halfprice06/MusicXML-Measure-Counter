@@ -58,6 +58,7 @@ class App:
             for filename in filenames:
                 if filename.lower().endswith(".mxl"):
                     musicxml_files_count += 1
+
         return musicxml_files_count
 
     def process_files(self):
@@ -76,6 +77,8 @@ class App:
         total_measures = 0
         file_count = 0
         musicxml_files_count = 0  # track MusicXML files only
+        total_musicxml_files = self.get_musicxml_files_count(folder_path)
+
         for dirpath, dirnames, filenames in os.walk(folder_path):
             for filename in filenames:
                 if not filename.lower().endswith(".mxl"):
@@ -98,7 +101,7 @@ class App:
                 print(f"Processed file: {file_path}")
 
                 # Update progress bar for MusicXML files only
-                self.progress_var.set(musicxml_files_count / self.get_musicxml_files_count(folder_path) * 100)
+                self.progress_var.set(musicxml_files_count / total_musicxml_files * 100)
                 self.progress_bar['value'] = self.progress_var.get()
                 self.master.update_idletasks()
 
@@ -107,15 +110,17 @@ class App:
 
         self.total_measures += total_measures
         self.total_measures_label.config(text=f"Total measures: {self.total_measures}")
+
     
 
     def get_total_measures(self, score):
+        if not score.parts:  # If there are no parts, return 0
+            return 0
         total_measures = 0
-        for part in score.parts:
-            for measure in part.getElementsByClass('Measure'):
-                if measure.barDurationProportion() != 1.0:
-                    continue
-                total_measures += 1
+        # Only count measures in the first part
+        first_part = score.parts[0]
+        for measure in first_part.getElementsByClass('Measure'):
+            total_measures += 1
         return total_measures
 
     def reset(self):
